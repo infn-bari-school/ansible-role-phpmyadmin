@@ -1,0 +1,39 @@
+---
+# tasks file for phpmyadmin
+
+- name: Add repo file
+  yum: name={{ epel_release }} state=present
+
+- name: Add repo key
+  rpm_key: state=present key={{ epel_repo_key }}
+
+- name: Install phpMyAdmin
+  yum: name=phpmyadmin state=present enablerepo={{ phpmyadmin_enablerepo }}
+  notify: restart_apache
+
+- name: Install php
+  yum: name=php state=present
+  notify: restart_apache
+
+- name: Add default username and password for MySQL connection.
+  lineinfile: >
+    dest={{ phpmyadmin_config_file }}
+    state=present
+    regexp="^.+\['{{ item.key }}'\].+$"
+    line="$cfg['Servers'][$i]['{{ item.key }}'] = '{{ item.value }}';"
+    insertbefore="^\?>"
+  with_items:
+  - { key: host, value: "{{ phpmyadmin_mysql_host }}" }
+  - { key: port, value: "{{ phpmyadmin_mysql_port }}" }
+  - { key: user, value: "{{ phpmyadmin_mysql_user }}" }
+  - { key: password, value: "{{ phpmyadmin_mysql_password }}"}
+
+- name: Grant access to /phpmyadmin 
+  lineinfile:  >
+    path=/etc/httpd/conf.d/phpMyAdmin.conf
+    state=present
+    regexp="^       Require all granted$"
+    line="       Require all granted"
+    insertbefore="^\s*Require ip 127.0.0.1"
+    firstmatch=yes
+#    backrefs: yes

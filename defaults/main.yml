@@ -1,0 +1,12 @@
+---
+# defaults file for phpmyadmin
+
+phpmyadmin_enablerepo: epel
+phpmyadmin_config_file: /etc/phpMyAdmin/config.inc.php
+phpmyadmin_mysql_host: 127.0.0.1
+phpmyadmin_mysql_port: 3306
+phpmyadmin_mysql_user: root
+phpmyadmin_mysql_password: s3cret
+
+epel_release: http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+epel_repo_key: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
