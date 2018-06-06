@@ -10,4 +10,4 @@ galaxy_info:
         - 7  
   galaxy_tags: 
    - phpmyadmin
-dependencies: []
+dependencies: [ infn-bari-school.apache ]
