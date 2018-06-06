@@ -9,11 +9,9 @@
 
 - name: Install phpMyAdmin
   yum: name=phpmyadmin state=present enablerepo={{ phpmyadmin_enablerepo }}
-  notify: restart_apache
 
 - name: Install php
   yum: name=php state=present
-  notify: restart_apache
 
 - name: Add default username and password for MySQL connection.
   lineinfile: >
@@ -27,6 +25,7 @@
   - { key: port, value: "{{ phpmyadmin_mysql_port }}" }
   - { key: user, value: "{{ phpmyadmin_mysql_user }}" }
   - { key: password, value: "{{ phpmyadmin_mysql_password }}"}
+  notify: restart apache
 
 - name: Grant access to /phpmyadmin 
   lineinfile:  >
@@ -36,4 +35,9 @@
     line="       Require all granted"
     insertbefore="^\s*Require ip 127.0.0.1"
     firstmatch=yes
-#    backrefs: yes
+  notify: restart apache
+
+- name: Set SELinux to permissive
+  selinux_permissive:
+    name: httpd_t
+    permissive: true
